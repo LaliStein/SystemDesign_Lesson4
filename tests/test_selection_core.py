@@ -40,3 +40,11 @@ def test_unknown_service_is_rejected(sample_event):
     with pytest.raises(selection_core.SelectionError) as err:
         selection_core.submit_selection(sample_event, "cli_100", ["med_1"], ["unknown_service"])
     assert err.value.code == "SERVICE_NOT_AVAILABLE"
+
+
+@pytest.mark.req("REQ-SEL-06")
+def test_selection_ids_increment(sample_event):
+    sel1 = selection_core.submit_selection(sample_event, "cli_100", ["med_1"], ["add_to_album"])
+    sel2 = selection_core.submit_selection(sample_event, "cli_100", ["med_2"], ["add_to_album"])
+    assert sel1["id"] == "sel_001"
+    assert sel2["id"] == "sel_002"
