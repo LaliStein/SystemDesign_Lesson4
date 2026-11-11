@@ -43,7 +43,16 @@ def submit_selection(event: dict, actor_id: str, media_ids: list, service_codes:
     for code in service_codes:
         if code not in enabled:
             raise SelectionError("SERVICE_NOT_AVAILABLE")
-
+        
+    event_media_ids = {
+        media_id
+        for gallery in event.get("galleries", [])
+        for media_id in gallery.get("media", [])
+    }
+    for media_id in media_ids:
+        if media_id not in event_media_ids:
+            raise SelectionError("MEDIA_NOT_IN_EVENT")
+                
     selections = event.setdefault("selections", [])
     selection = {
         "id": f"sel_{len(selections) + 1:03d}",
